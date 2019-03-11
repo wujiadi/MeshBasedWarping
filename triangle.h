@@ -248,6 +248,9 @@
 /*                                                                           */
 /*****************************************************************************/
 
+#define REAL double
+#define ANSI_DECLARATORS
+
 struct triangulateio {
   REAL *pointlist;                                               /* In / out */
   REAL *pointattributelist;                                      /* In / out */
@@ -287,3 +290,6 @@ void trifree(int *memptr);
 void triangulate();
 void trifree();
 #endif /* not ANSI_DECLARATORS */
+
+
+

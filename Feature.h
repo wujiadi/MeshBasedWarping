@@ -9,6 +9,13 @@
 #include <QPolygon>
 #include <vector>
 #include "Line.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+extern "C"
+{
+#include "triangle.h"
+}
 
 using namespace std;
 using namespace cv;
@@ -21,6 +28,8 @@ public:
 	void fast_feature(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_);
 
 private:
+	void creat_mesh(vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_);
+	void report(struct triangulateio * io, int markers, int reporttriangles, int reportneighbors, int reportsegments,int reportedges, int reportnorms);
 
 };
 
