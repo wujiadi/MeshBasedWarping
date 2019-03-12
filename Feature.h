@@ -28,7 +28,7 @@ public:
 	void fast_feature(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_);
 
 private:
-	void creat_mesh(vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_);
+	void creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_);
 	void report(struct triangulateio * io, int markers, int reporttriangles, int reportneighbors, int reportsegments,int reportedges, int reportnorms);
 
 };

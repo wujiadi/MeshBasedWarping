@@ -12,22 +12,34 @@ Feature::~Feature()
 
 void Feature::fast_feature(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_)
 {
-	FastFeatureDetector fast(30);//30
+	FastFeatureDetector fast(40);//30
 	fast.detect(image,keyPoints);  
-	creat_mesh(keyPoints, Line_mesh_);
+	creat_mesh(image, keyPoints, Line_mesh_);
 }
 
-void Feature::creat_mesh(vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_)
+void Feature::creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_)
 {
 	struct triangulateio in, mid, out, vorout;
 
 	/* Define input points. */
 
-	in.numberofpoints = keyPoints.size();
+	int width = image.cols;
+	int height = image.rows;
+
+	in.numberofpoints = keyPoints.size() + 4;
 	in.numberofpointattributes = 0;
 	in.pointlist = (REAL *) malloc(in.numberofpoints * 2 * sizeof(REAL));
 
-	for (int i = 0; i < in.numberofpoints; i++)
+	in.pointlist[0] = 0;
+	in.pointlist[1] = 0;
+	in.pointlist[2] = 0;
+	in.pointlist[3] = height;
+	in.pointlist[4] = width;
+	in.pointlist[5] = 0;
+	in.pointlist[6] = width;
+	in.pointlist[7] = height;
+
+	for (int i = 4; i < in.numberofpoints - 4; i++)
 	{
 		in.pointlist[i * 2] = keyPoints[i].pt.x;
 		in.pointlist[i * 2 + 1] = keyPoints[i].pt.y;
@@ -79,14 +91,13 @@ void Feature::creat_mesh(vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_
 
 	for (int i = 0; i < mid.numberofedges; i++) 
 	{
-
 		int startpoint, endpoint;
 
 		startpoint = mid.edgelist[i * 2 + 0];
 		endpoint = mid.edgelist[i * 2 + 1];
 
 		Line* current_line_ = NULL;
-		current_line_ = new Line(startx, starty, endx, endy);
+		current_line_ = new Line((int)in.pointlist[startpoint * 2], (int)in.pointlist[startpoint * 2 + 1], (int)in.pointlist[endpoint * 2], (int)in.pointlist[endpoint * 2 + 1]);
 		Line_mesh_.push_back(current_line_);
 
 	}

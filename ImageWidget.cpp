@@ -14,7 +14,7 @@ ImageWidget::ImageWidget(void)
 {
 
 	draw_status_ = false;
-	show_mesh_ = false;
+	show_mesh_ = true;
 
 	Run_mode_ = kDefault;
 	func = NULL;
@@ -101,7 +101,7 @@ void ImageWidget::paintEvent(QPaintEvent *paintevent)
 
 	// Draw image
 	QImage image_show = QImage( (unsigned char *)(image_mat_.data), image_mat_.cols, image_mat_.rows, image_mat_.step, QImage::Format_RGB888 );
-	QRect rect = QRect( (width()-image_show.width())/2, (height()-image_show.height())/2, image_show.width(), image_show.height());
+	QRect rect = QRect(0, 0, image_show.width(), image_show.height());
 	painter.drawImage(rect, image_show);
 	// Draw line
 	if (Run_mode_ == KSetpoint)
@@ -121,11 +121,11 @@ void ImageWidget::paintEvent(QPaintEvent *paintevent)
 	if (show_mesh_ == true)
 	{
 		QPen pen;
-		pen.setWidth(4);
+		pen.setWidth(1);
 		pen.setBrush(Qt::green);
 		painter.setPen(pen);
 
-		for (size_t i = 0; i < Line_array_.size(); i++)
+		for (size_t i = 0; i < Line_mesh_.size(); i++)
 		{
 			Line_mesh_[i]->Draw(painter);
 		}
