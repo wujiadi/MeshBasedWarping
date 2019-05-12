@@ -12,7 +12,6 @@
 #include "ImageWrap.h"
 
 using namespace std;
-
 using namespace cv;
 
 QT_BEGIN_NAMESPACE
@@ -28,6 +27,12 @@ enum RunMode
 	kRBF = 2,
 	kIDW = 3,
 	KFix = 4,
+};
+
+struct PQPoint
+{
+	QPoint PPoint;
+	QPoint QPoint;
 };
 
 #define SEARCH_R		4
@@ -69,18 +74,21 @@ public slots:
 private:
 	Mat				 image_mat_;
 	Mat				 image_mat_backup_;
-	bool			 draw_status_;								// draw line
+	bool			 draw_status_;								 // draw line
 	bool             show_mesh_;
 	QPoint			 start_point_;
 	QPoint			 end_point_;
 	QPolygon         Start_Point_;                               //n pair control points
 	QPolygon         End_Point_;                                 //n pair control points
+	RunMode			 Run_mode_;
+
 	vector<Line* >   Line_array_;
 	vector<Line* >   Line_mesh_;
 	vector<KeyPoint> keyPoints;
-
+	vector<PQPoint>  PQPoints;
+	list<edge>		 *ET;
+	list<edge>       AET;
 
 	Wrap			 *func;
-	RunMode			 Run_mode_;
 };
 

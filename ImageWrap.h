@@ -6,6 +6,7 @@
 #include <opencv2/core/core.hpp>
 #include <QPolygon>
 #include <vector>
+#include <list>
 #include <QImage>
 #include <iostream>
 #include <Dense>
@@ -13,6 +14,15 @@
 using namespace cv;
 using namespace std;
 using namespace Eigen;
+
+struct edge
+{
+	int ymax;
+	float x;
+	float dx;
+	int PonitA;
+	int PonitB;
+};
 
 class Wrap
 {

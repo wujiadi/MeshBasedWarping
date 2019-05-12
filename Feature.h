@@ -9,6 +9,8 @@
 #include <QPolygon>
 #include <vector>
 #include "Line.h"
+#include "ImageWrap.h"
+#include "ImageWidget.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -25,11 +27,12 @@ class Feature
 public:
 	Feature(void);
 	~Feature(void);
-	void fast_feature(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_);
+	void fast_feature(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_, list<edge>* &ET, vector<PQPoint>  &PQPoints);
 
 private:
-	void creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_);
+	void creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_, list<edge>* &ET, vector<PQPoint> &PQPoints);
 	void report(struct triangulateio * io, int markers, int reporttriangles, int reportneighbors, int reportsegments,int reportedges, int reportnorms);
+	void AddEdgeToET(int startindex, int x1, int y1, int endindex, int x2, int y2, list<edge> * &ET);
 
 };
 

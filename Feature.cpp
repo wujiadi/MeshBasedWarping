@@ -10,14 +10,16 @@ Feature::~Feature()
 
 }
 
-void Feature::fast_feature(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_)
+//get feature points
+void Feature::fast_feature(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_, list<edge> * &ET, vector<PQPoint> &PQPoints)
 {
 	FastFeatureDetector fast(40);//30
 	fast.detect(image,keyPoints);  
-	creat_mesh(image, keyPoints, Line_mesh_);
+	creat_mesh(image, keyPoints, Line_mesh_, ET, PQPoints);
 }
 
-void Feature::creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_)
+//creat mesh points according to the feature points
+void Feature::creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_, list<edge>* &ET, vector<PQPoint> &PQPoints)
 {
 	struct triangulateio in, mid, out, vorout;
 
@@ -25,6 +27,9 @@ void Feature::creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<L
 
 	int width = image.cols;
 	int height = image.rows;
+	int keypointsize = keyPoints.size();
+
+	ET = new list<edge>[height];
 
 	in.numberofpoints = keyPoints.size() + 4;
 	in.numberofpointattributes = 0;
@@ -39,11 +44,13 @@ void Feature::creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<L
 	in.pointlist[6] = width;
 	in.pointlist[7] = height;
 
-	for (int i = 4; i < in.numberofpoints - 4; i++)
+
+	for (int i = 0; i < keypointsize; i++)
 	{
-		in.pointlist[i * 2] = keyPoints[i].pt.x;
-		in.pointlist[i * 2 + 1] = keyPoints[i].pt.y;
+		in.pointlist[8 + i * 2] = keyPoints[i].pt.x;
+		in.pointlist[8 + i * 2 + 1] = keyPoints[i].pt.y;
 	}
+
 
 	in.pointattributelist = (REAL *) NULL;
 
@@ -84,7 +91,7 @@ void Feature::creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<L
 	/*   produce an edge list (e), a Voronoi diagram (v), and a triangle */
 	/*   neighbor list (n).                                              */
 
-	triangulate("pczen", &in, &mid, &vorout);
+	triangulate("qczen", &in, &mid, &vorout);//pczen
 
 	printf("Initial triangulation:\n\n");
 	report(&mid, 0, 1, 1, 1, 1, 0);
@@ -97,9 +104,20 @@ void Feature::creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<L
 		endpoint = mid.edgelist[i * 2 + 1];
 
 		Line* current_line_ = NULL;
-		current_line_ = new Line((int)in.pointlist[startpoint * 2], (int)in.pointlist[startpoint * 2 + 1], (int)in.pointlist[endpoint * 2], (int)in.pointlist[endpoint * 2 + 1]);
+		current_line_ = new Line((int)mid.pointlist[startpoint * 2], (int)mid.pointlist[startpoint * 2 + 1], (int)mid.pointlist[endpoint * 2], (int)mid.pointlist[endpoint * 2 + 1]);
 		Line_mesh_.push_back(current_line_);
 
+		//AddEdgeToET(startpoint, (int)mid.pointlist[startpoint * 2], (int)mid.pointlist[startpoint * 2 + 1], endpoint, (int)mid.pointlist[endpoint * 2], (int)mid.pointlist[endpoint * 2 + 1], ET);
+
+	}
+
+	for (int i = 0; i < mid.numberofpoints; i++) 
+	{
+		PQPoint temppoint;
+		temppoint.PPoint.rx() = (int)mid.pointlist[i * 2];
+		temppoint.PPoint.ry() = (int)mid.pointlist[i * 2 + 1];
+
+		PQPoints.push_back(temppoint);
 	}
 
 	/* Free all allocated arrays, including those allocated by Triangle. */
@@ -121,6 +139,7 @@ void Feature::creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<L
 	return;
 }
 
+//just for debug
 void Feature::report(struct triangulateio * io, int markers, int reporttriangles, int reportneighbors, int reportsegments,int reportedges, int reportnorms)
 {
 	int i, j;
@@ -206,4 +225,29 @@ void Feature::report(struct triangulateio * io, int markers, int reporttriangles
 		}
 		printf("\n");
 	}
+}
+
+//TODO
+void Feature::AddEdgeToET(int startindex, int x1, int y1, int endindex, int x2, int y2, list<edge> * &ET)
+{
+	if (y1 == y2)
+	{
+		return;
+	}
+
+	int ymin = y1 > y2 ? y2 : y1;
+	int ymax = y1 > y2 ? y1 : y2;
+	float x = y1 > y2 ? x2 : x1;
+	float dx = (x1 - x2) * 1.0f / (y1 - y2);
+
+	edge tempedge;
+	tempedge.PonitA = startindex;
+	tempedge.PonitB = endindex;
+	tempedge.x = x;
+	tempedge.dx = dx;
+	tempedge.ymax = ymax;
+
+	ET[ymin].push_back(tempedge);
+
+	return;
 }

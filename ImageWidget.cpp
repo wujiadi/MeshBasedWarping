@@ -18,6 +18,8 @@ ImageWidget::ImageWidget(void)
 
 	Run_mode_ = kDefault;
 	func = NULL;
+	ET = NULL;
+
 	Start_Point_.clear();
 	End_Point_.clear();
 }
@@ -38,9 +40,15 @@ ImageWidget::~ImageWidget(void)
 	{
 		if (Line_mesh_[i])
 		{
-			delete Line_array_[i];
+			delete Line_mesh_[i];
 			Line_mesh_[i] = NULL;
 		}
+	}
+
+	if (ET)
+	{
+		delete [] ET;
+		func = NULL;
 	}
 
 	if (func)
@@ -153,7 +161,7 @@ void ImageWidget::Open()
 	}
 
 	Feature feature_;
-	feature_.fast_feature(image_mat_, keyPoints, Line_mesh_);
+	feature_.fast_feature(image_mat_, keyPoints, Line_mesh_, ET, PQPoints);
 
 	update();
 }
@@ -261,13 +269,13 @@ void ImageWidget::ImageWarp()
 	{
 	case kRBF:
 		func = new RBF;
-		func->Init(Start_Point_,End_Point_);//get parameter
+		func->Init(Start_Point_,End_Point_);									//get parameter
 		func->DoWrap(image_mat_, Start_Point_, End_Point_);                     //do image wrap
 		break;
 
 	case kIDW:
 		func = new IDW;
-		func->Init(Start_Point_,End_Point_);//get parameter
+		func->Init(Start_Point_,End_Point_);									//get parameter
 		func->DoWrap(image_mat_, Start_Point_, End_Point_);                     //do image wrap
 		break;
 
@@ -345,6 +353,17 @@ void ImageWidget::SetModeToSetPoint()
 		return;
 	}
 	Run_mode_ = KSetpoint;
+
+	show_mesh_ = false;
+
+	for (size_t i = 0; i < Line_mesh_.size(); i++)
+	{
+		if (Line_mesh_[i])
+		{
+			delete Line_mesh_[i];
+			Line_mesh_[i] = NULL;
+		}
+	}
 
 	/*
 	Start_Point_ << QPoint(0, 0);
