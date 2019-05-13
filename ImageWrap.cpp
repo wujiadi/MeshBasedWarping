@@ -23,8 +23,117 @@ int Wrap::Init(QPolygon &StartPoints, QPolygon &EndPoints)
 	return 0;
 }
 
-int Wrap::DoWrap(Mat &image, QPolygon &StartPoints, QPolygon &EndPoints)
+int Wrap::DoWrap(Mat &image, QPolygon &StartPoints, QPolygon &EndPoints, vector<PQPoint> &PQPoints, list<edge>* ET)
 {
+	QPoint temppoint;
+	QPoint resultpoint;
+	list<edge> AET;
+
+	Mat tempimage = image.clone();
+	int width = image.cols;
+	int height = image.rows;
+
+	MatrixSet.resize(height, width);
+	MatrixSet.setZero();
+
+	for (int i=0; i<width; i++)
+	{
+		for (int j=0; j<height; j++)
+		{
+			image.at<Vec3b>(j, i) = Vec3b(255, 255, 255);
+		}
+	}
+
+	//for P points
+	int tempsize = PQPoints.size();
+	for (int i = 0; i < tempsize; i++)
+	{
+		Vec3i bgr;
+		bgr = tempimage.at<Vec3b>(PQPoints[i].PPoint.ry(), PQPoints[i].PPoint.rx());
+
+		temppoint.rx() = PQPoints[i].PPoint.x();
+		temppoint.ry() = PQPoints[i].PPoint.y();
+
+		resultpoint = CalculatePixel(temppoint, StartPoints, EndPoints);
+
+		if((resultpoint.x() > 0) && (resultpoint.x() < width) && (resultpoint.y() > 0) && (resultpoint.y() < height))
+		{
+			image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
+			MatrixSet(resultpoint.y(), resultpoint.x()) = 1;
+
+			PQPoints[i].QPoint.rx() = resultpoint.x();
+			PQPoints[i].QPoint.ry() = resultpoint.y();
+		}
+	}
+
+	//for mesh points
+	for (int i = 0; i < height; i++)
+	{
+		//删除AET中满足y=ymax的边
+		for(list<edge>::iterator aetit = AET.begin(); aetit != AET.end(); aetit++)
+		{
+			if (aetit->ymax == i)
+			{
+				AET.erase(aetit);
+			}
+		}
+
+		//取出ET中当前扫描行的所有边并按x的递增顺序（若x相等则按dx的递增顺序）插入AET
+		for(list<edge>::iterator etit = ET[i].begin(); etit != ET[i].end(); etit++)
+		{
+			for(list<edge>::iterator aetit = AET.begin(); aetit != AET.end(); aetit++)
+			{
+				if (etit->x > aetit->x)
+				{
+					continue;
+				}
+
+				if ((etit->x == aetit->x) && (etit->dx > aetit->dx))
+				{
+					continue;
+				}
+
+				AET.insert (aetit,etit); 
+				break;
+			}
+		}
+
+		//AET中的边两两配对并填色
+		list<edge>::iterator aetit = AET.begin();
+		while(1)
+		{
+			if (aetit == AET.end())
+			{
+				break;
+			}
+			edge edgeA = *aetit;
+
+			aetit++;
+
+			if (aetit == AET.end())
+			{
+				break;
+			}
+			edge edgeB = *aetit;
+
+			if (edgeA.x == edgeB.x)
+			{
+				continue;
+			}
+			else
+			{
+				//重心坐标插值（edgeA.x,edgeB.x, i, image tempimage pq）
+			}
+		}
+
+		//更新AET中边的x值，进入下一循环
+		for(list<edge>::iterator aetit = AET.begin(); aetit != AET.end(); aetit++)
+		{
+			aetit->x += aetit->dx;
+		}
+	
+	}
+
 	return 0;
 }
 

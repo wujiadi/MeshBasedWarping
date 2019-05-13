@@ -21,48 +21,6 @@ int IDW::Init(QPolygon &StartPoints, QPolygon &EndPoints)
 	return 0;
 }
 
-int IDW::DoWrap(Mat &image, QPolygon &StartPoints, QPolygon &EndPoints)
-{
-	QPoint temppoint;
-	QPoint resultpoint;
-
-	Mat tempimage = image.clone();
-	int width = image.cols;
-	int height = image.rows;
-
-	MatrixSet.resize(height, width);
-	MatrixSet.setZero();
-
-	for (int i=0; i<width; i++)
-	{
-		for (int j=0; j<height; j++)
-		{
-			image.at<Vec3b>(j, i) = Vec3b(255, 255, 255);
-		}
-	}
-
-	for (int i=0; i<width; i++)
-	{
-		for (int j=0; j<height; j++)
-		{
-			Vec3i bgr;
-			bgr = tempimage.at<Vec3b>(j, i);
-
-			temppoint.rx() = i;
-			temppoint.ry() = j;
-
-			resultpoint = CalculatePixel(temppoint, StartPoints, EndPoints);
-
-			if((resultpoint.x() > 0) && (resultpoint.x() < width) && (resultpoint.y() > 0) && (resultpoint.y() < height))
-			{
-				image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
-				MatrixSet(resultpoint.y(), resultpoint.x()) = 1;
-			}
-		}
-	}
-
-	return 0;
-}
 
 QPoint IDW::CalculatePixel(QPoint const &orgpoint, QPolygon &StartPoints, QPolygon &EndPoints)
 {

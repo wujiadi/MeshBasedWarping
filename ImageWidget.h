@@ -86,6 +86,7 @@ private:
 	vector<Line* >   Line_mesh_;
 	vector<KeyPoint> keyPoints;
 	vector<PQPoint>  PQPoints;
+
 	list<edge>		 *ET;
 	list<edge>       AET;
 

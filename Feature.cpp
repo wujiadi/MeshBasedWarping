@@ -107,7 +107,7 @@ void Feature::creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<L
 		current_line_ = new Line((int)mid.pointlist[startpoint * 2], (int)mid.pointlist[startpoint * 2 + 1], (int)mid.pointlist[endpoint * 2], (int)mid.pointlist[endpoint * 2 + 1]);
 		Line_mesh_.push_back(current_line_);
 
-		//AddEdgeToET(startpoint, (int)mid.pointlist[startpoint * 2], (int)mid.pointlist[startpoint * 2 + 1], endpoint, (int)mid.pointlist[endpoint * 2], (int)mid.pointlist[endpoint * 2 + 1], ET);
+		AddEdgeToET(startpoint, (int)mid.pointlist[startpoint * 2], (int)mid.pointlist[startpoint * 2 + 1], endpoint, (int)mid.pointlist[endpoint * 2], (int)mid.pointlist[endpoint * 2 + 1], ET);
 
 	}
 

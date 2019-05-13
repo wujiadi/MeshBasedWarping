@@ -270,13 +270,13 @@ void ImageWidget::ImageWarp()
 	case kRBF:
 		func = new RBF;
 		func->Init(Start_Point_,End_Point_);									//get parameter
-		func->DoWrap(image_mat_, Start_Point_, End_Point_);                     //do image wrap
+		func->DoWrap(image_mat_, Start_Point_, End_Point_, PQPoints, ET);                     //do image wrap
 		break;
 
 	case kIDW:
 		func = new IDW;
 		func->Init(Start_Point_,End_Point_);									//get parameter
-		func->DoWrap(image_mat_, Start_Point_, End_Point_);                     //do image wrap
+		func->DoWrap(image_mat_, Start_Point_, End_Point_, PQPoints, ET);                     //do image wrap
 		break;
 
 	case KFix:

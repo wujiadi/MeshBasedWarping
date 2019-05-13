@@ -13,7 +13,7 @@ public:
 	IDW(void);
 	~IDW(void);
 	int Init(QPolygon &StartPoints, QPolygon &EndPoints);
-	int DoWrap(Mat &image, QPolygon &StartPoints, QPolygon &EndPoints);
+	QPoint CalculatePixel(QPoint const &orgpoint, QPolygon &StartPoints, QPolygon &EndPoints);
 
 private:
 	void GetCoeT(QPolygon &StartPoints, QPolygon &EndPoints);

@@ -13,12 +13,11 @@ public:
 	RBF(void);
 	~RBF(void);
 	int Init(QPolygon &StartPoints, QPolygon &EndPoints);
-	int DoWrap(Mat &image, QPolygon &StartPoints, QPolygon &EndPoints);
+	QPoint CalculatePixel(QPoint const &orgpoint, QPolygon &StartPoints, QPolygon &EndPoints);
 
 private:
 	void GetCoeR(QPolygon &StartPoints);
 	void GetCoeXY(QPolygon &StartPoints, QPolygon &EndPoints);
-	QPoint CalculatePixel(QPoint const &orgpoint, QPolygon &StartPoints);
 
 	vector<double> CoeX;
 	vector<double> CoeY;	
