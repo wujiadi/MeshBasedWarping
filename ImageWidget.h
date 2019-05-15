@@ -1,4 +1,6 @@
-#pragma once
+#ifndef IMAGEW_H
+#define IMAGEW_H
+
 #include <QWidget>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -8,8 +10,8 @@
 #include <QPolygon>
 #include <QMouseEvent>
 #include <vector>
+#include <list>
 #include "Line.h"
-#include "ImageWrap.h"
 
 using namespace std;
 using namespace cv;
@@ -29,14 +31,26 @@ enum RunMode
 	KFix = 4,
 };
 
+struct edge
+{
+	int ymax;
+	float x;
+	float dx;
+	int PonitA;
+	int PonitB;
+};
+
 struct PQPoint
 {
 	QPoint PPoint;
 	QPoint QPoint;
 };
 
+class Wrap;
+
 #define SEARCH_R		4
 #define SEARCH_POINT    4
+
 class ImageWidget :
 	public QWidget
 {
@@ -92,4 +106,6 @@ private:
 
 	Wrap			 *func;
 };
+
+#endif
 

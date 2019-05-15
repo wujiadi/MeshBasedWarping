@@ -1,4 +1,5 @@
 #include "ImageWidget.h"
+#include "ImageWrap.h"
 #include "Feature.h"
 #include "RBF.h"
 #include "IDW.h"

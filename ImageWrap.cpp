@@ -93,7 +93,7 @@ int Wrap::DoWrap(Mat &image, QPolygon &StartPoints, QPolygon &EndPoints, vector<
 					continue;
 				}
 
-				AET.insert (aetit,etit); 
+				AET.insert (aetit,*etit); 
 				break;
 			}
 		}
@@ -122,7 +122,7 @@ int Wrap::DoWrap(Mat &image, QPolygon &StartPoints, QPolygon &EndPoints, vector<
 			}
 			else
 			{
-				//重心坐标插值（edgeA.x,edgeB.x, i, image tempimage pq）
+				BCinterpolation(edgeA, edgeB, i, image, tempimage, PQPoints);
 			}
 		}
 
@@ -253,4 +253,89 @@ double Wrap::GetDistance(QPoint PointA, QPoint PointB)
 
 	return result;
 }
+
+int Wrap::BCinterpolation(edge &edgeA, edge &edgeB, int y, Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints)
+{
+	int width = orgimage.cols;
+	int height = orgimage.rows;
+
+	QPoint VertexP[3];
+	QPoint VertexQ[3];
+
+	double Para[3];
+
+	GetTrianglePonit(edgeA, edgeB, PQPoints, VertexP, VertexQ);
+
+	for (int i = edgeA.x; i < edgeB.x; i++)
+	{
+		QPoint temppoint, resultpoint;
+		temppoint.rx() = i;
+		temppoint.ry() = y;
+
+		Vec3i bgr;
+		bgr = orgimage.at<Vec3b>(temppoint.ry(), temppoint.rx());
+
+		GetBarycentricCoordinate(VertexP, temppoint, Para);
+
+		resultpoint = Para[0]*VertexQ[0] + Para[1]*VertexQ[1] + Para[2]*VertexQ[2];
+
+		if((resultpoint.x() > 0) && (resultpoint.x() < width) && (resultpoint.y() > 0) && (resultpoint.y() < height))
+		{
+			image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
+			MatrixSet(resultpoint.y(), resultpoint.x()) = 1;
+		}
+
+	}
+
+
+
+}
+
+int Wrap::GetTrianglePonit(edge &edgeA, edge &edgeB, vector<PQPoint> &PQPoints, QPoint *VertexP, QPoint *VertexQ)
+{
+	int PonitA, PointB, PointC;
+
+	PonitA = edgeA.PonitA;
+	PointB = edgeA.PonitB;
+
+	if ((edgeB.PonitA == PonitA)||(edgeB.PonitA == PointB))
+	{
+		PointC = edgeB.PonitB;
+	}
+	else if ((edgeB.PonitB == PonitA)||(edgeB.PonitB == PointB))
+	{
+		PointC = edgeB.PonitA;
+	}
+	else
+	{
+		return 1;
+	}
+
+	VertexP[0] = PQPoints[PonitA].PPoint;
+	VertexP[1] = PQPoints[PointB].PPoint;
+	VertexP[2] = PQPoints[PointC].PPoint;
+
+	VertexQ[0] = PQPoints[PonitA].QPoint;
+	VertexQ[1] = PQPoints[PointB].QPoint;
+	VertexQ[2] = PQPoints[PointC].QPoint;
+
+	return 0;
+
+}
+
+int Wrap::GetBarycentricCoordinate(QPoint *VertexP, QPoint x, double *Para)
+{
+	QPoint A,B,C;
+
+	A = VertexP[0];
+	B = VertexP[1];
+	C = VertexP[2];
+
+	Para[0]=(B.y()*C.x()*1.0f-B.x()*C.y()-B.y()*x.x()+C.y()*x.x()+B.x()*x.y()-C.x()*x.y())/(A.y()*B.x()*1.0f-A.x()*B.y()-A.y()*C.x()+B.y()*C.x()+A.x()*C.y()-B.x()*C.y());
+	Para[1]=(-A.y()*C.x()*1.0f+A.x()*C.y()+A.y()*x.x()-C.y()*x.x()-A.x()*x.y()+C.x()*x.y())/(A.y()*B.x()*1.0f-A.x()*B.y()-A.y()*C.x()+B.y()*C.x()+A.x()*C.y()-B.x()*C.y());
+	Para[2]=(A.y()*B.x()*1.0f-A.x()*B.y()-A.y()*x.x()+B.y()*x.x()+A.x()*x.y()-B.x()*x.y())/(A.y()*B.x()*1.0f-A.x()*B.y()-A.y()*C.x()+B.y()*C.x()+A.x()*C.y()-B.x()*C.y());
+
+	return 0;
+}
+
 

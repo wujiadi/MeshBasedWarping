@@ -17,7 +17,6 @@ public:
 
 private:
 	void GetCoeT(QPolygon &StartPoints, QPolygon &EndPoints);
-	QPoint CalculatePixel(QPoint const &orgpoint, QPolygon &StartPoints, QPolygon &EndPoints);
 	void GetCoeWeight(QPoint const &orgpoint, QPolygon &StartPoints);
 
 	MatrixXd T;

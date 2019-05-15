@@ -17,14 +17,6 @@ using namespace cv;
 using namespace std;
 using namespace Eigen;
 
-struct edge
-{
-	int ymax;
-	float x;
-	float dx;
-	int PonitA;
-	int PonitB;
-};
 
 class Wrap
 {
@@ -41,7 +33,9 @@ public:
 	MatrixXi MatrixSet;
 
 private:
-
+	int BCinterpolation(edge &edgeA, edge &edgeB, int y, Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints);
+	int GetTrianglePonit(edge &edgeA, edge &edgeB, vector<PQPoint> &PQPoints, QPoint *VertexP, QPoint *VertexQ);
+	int Wrap::GetBarycentricCoordinate(QPoint *VertexP, QPoint x, double *Para);
 };
 
 #endif
