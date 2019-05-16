@@ -38,11 +38,11 @@ void Feature::creat_mesh(Mat const &image, vector<KeyPoint> &keyPoints, vector<L
 	in.pointlist[0] = 0;
 	in.pointlist[1] = 0;
 	in.pointlist[2] = 0;
-	in.pointlist[3] = height;
-	in.pointlist[4] = width;
+	in.pointlist[3] = height - 1;
+	in.pointlist[4] = width - 1;
 	in.pointlist[5] = 0;
-	in.pointlist[6] = width;
-	in.pointlist[7] = height;
+	in.pointlist[6] = width - 1;
+	in.pointlist[7] = height - 1;
 
 
 	for (int i = 0; i < keypointsize; i++)

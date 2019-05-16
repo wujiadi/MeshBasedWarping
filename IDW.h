@@ -13,11 +13,12 @@ public:
 	IDW(void);
 	~IDW(void);
 	int Init(QPolygon &StartPoints, QPolygon &EndPoints);
-	QPoint CalculatePixel(QPoint const &orgpoint, QPolygon &StartPoints, QPolygon &EndPoints);
+	int DoWrapPoints(Mat &image, Mat &tempimage, QPolygon &StartPoints, QPolygon &EndPoints, vector<PQPoint> &PQPoints, list<edge>* ET);
 
 private:
 	void GetCoeT(QPolygon &StartPoints, QPolygon &EndPoints);
 	void GetCoeWeight(QPoint const &orgpoint, QPolygon &StartPoints);
+	QPoint CalculatePixel(QPoint const &orgpoint, QPolygon &StartPoints, QPolygon &EndPoints);
 
 	MatrixXd T;
 	vector<double> weight;

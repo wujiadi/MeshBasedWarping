@@ -21,6 +21,50 @@ int IDW::Init(QPolygon &StartPoints, QPolygon &EndPoints)
 	return 0;
 }
 
+int IDW::DoWrapPoints(Mat &image, Mat &tempimage, QPolygon &StartPoints, QPolygon &EndPoints, vector<PQPoint> &PQPoints, list<edge>* ET)
+{
+	QPoint temppoint;
+	QPoint resultpoint;
+
+	int width = image.cols;
+	int height = image.rows;
+
+	MatrixSet.resize(height, width);
+	MatrixSet.setZero();
+
+	for (int i=0; i<width; i++)
+	{
+		for (int j=0; j<height; j++)
+		{
+			image.at<Vec3b>(j, i) = Vec3b(255, 255, 255);
+		}
+	}
+
+	//for P points
+	int tempsize = PQPoints.size();
+	for (int i = 0; i < tempsize; i++)
+	{
+		Vec3i bgr;
+		bgr = tempimage.at<Vec3b>(PQPoints[i].PPoint.ry(), PQPoints[i].PPoint.rx());
+
+		temppoint.rx() = PQPoints[i].PPoint.x();
+		temppoint.ry() = PQPoints[i].PPoint.y();
+
+		resultpoint = CalculatePixel(temppoint, StartPoints, EndPoints);
+
+		if((resultpoint.x() >= 0) && (resultpoint.x() < width) && (resultpoint.y() >= 0) && (resultpoint.y() < height))
+		{
+			image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
+			MatrixSet(resultpoint.y(), resultpoint.x()) = 1;
+
+			PQPoints[i].QPoint.rx() = resultpoint.x();
+			PQPoints[i].QPoint.ry() = resultpoint.y();
+		}
+	}
+
+	return 0;
+}
+
 
 QPoint IDW::CalculatePixel(QPoint const &orgpoint, QPolygon &StartPoints, QPolygon &EndPoints)
 {

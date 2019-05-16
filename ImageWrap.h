@@ -24,9 +24,9 @@ public:
 	Wrap(void);
 	virtual ~Wrap(void);
 	virtual int Init(QPolygon &StartPoints, QPolygon &EndPoints);
-	virtual QPoint CalculatePixel(QPoint const &orgpoint, QPolygon &StartPoints, QPolygon &EndPoints);
+	virtual int DoWrapPoints(Mat &image, Mat &tempimage, QPolygon &StartPoints, QPolygon &EndPoints, vector<PQPoint> &PQPoints, list<edge>* ET);
 
-	int DoWrap(Mat &image, QPolygon &StartPoints, QPolygon &EndPoints, vector<PQPoint> &PQPoints, list<edge>* ET);
+	int DoWrapMesh(Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints, list<edge>* ET);
 	int FixImage(Mat &image, int searchradius, int searchcount);                                       //Fix the image after wraping
 	double GetDistance(QPoint PointA, QPoint PointB);
 
