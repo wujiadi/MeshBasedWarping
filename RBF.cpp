@@ -53,14 +53,13 @@ int RBF::DoWrapPoints(Mat &image, Mat &tempimage, QPolygon &StartPoints, QPolygo
 		temppoint.ry() = PQPoints[i].PPoint.y();
 
 		resultpoint = CalculatePixel(temppoint, StartPoints, EndPoints);
+		PQPoints[i].QPoint.rx() = resultpoint.x();
+		PQPoints[i].QPoint.ry() = resultpoint.y();
 
 		if((resultpoint.x() >= 0) && (resultpoint.x() < width) && (resultpoint.y() >= 0) && (resultpoint.y() < height))
 		{
 			image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
 			MatrixSet(resultpoint.y(), resultpoint.x()) = 1;
-
-			PQPoints[i].QPoint.rx() = resultpoint.x();
-			PQPoints[i].QPoint.ry() = resultpoint.y();
 		}
 	}
 

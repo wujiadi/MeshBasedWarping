@@ -156,7 +156,18 @@ int Wrap::DoWrapMesh(Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints, list<
 	//for mesh points
 	for (int i = 0; i < height; i++)
 	{
-
+		//删除AET中满足y=ymax的边
+		for(list<edge>::iterator aetit = AET.begin(); aetit != AET.end();)
+		{
+			if (aetit->ymax == i)
+			{
+				aetit = AET.erase(aetit);
+			}
+			else
+			{
+				aetit++;
+			}
+		}
 
 		//取出ET中当前扫描行的所有边并按x的递增顺序（若x相等则按dx的递增顺序）插入AET
 		for(list<edge>::iterator etit = ET[i].begin(); etit != ET[i].end(); etit++)
@@ -213,19 +224,6 @@ int Wrap::DoWrapMesh(Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints, list<
 			}
 		}
 
-		//删除AET中满足y=ymax的边
-		for(list<edge>::iterator aetit = AET.begin(); aetit != AET.end();)
-		{
-			if (aetit->ymax == i)
-			{
-				aetit = AET.erase(aetit);
-			}
-			else
-			{
-				aetit++;
-			}
-		}
-
 		//更新AET中边的x值，进入下一循环
 		for(list<edge>::iterator aetit = AET.begin(); aetit != AET.end(); aetit++)
 		{
@@ -266,6 +264,10 @@ int Wrap::BCinterpolation(edge &edgeA, edge &edgeB, int y, Mat &image, Mat &orgi
 		{
 			image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
 			MatrixSet(resultpoint.y(), resultpoint.x()) = 1;
+		}
+		else
+		{
+			//printf("error point:\n");
 		}
 
 	}
