@@ -9,6 +9,8 @@ double			eps				= 0;			// error bound
 int				maxPts			= 1000;			// maximum number of data points
 int             sqRad           = 1;
 
+int overlapcount = 0;
+
 Wrap::Wrap()
 {
 
@@ -239,6 +241,7 @@ int Wrap::BCinterpolation(edge &edgeA, edge &edgeB, int y, Mat &image, Mat &orgi
 {
 	int width = orgimage.cols;
 	int height = orgimage.rows;
+	int start,end = 0;
 
 	QPoint VertexP[3];
 	QPoint VertexQ[3];
@@ -247,9 +250,18 @@ int Wrap::BCinterpolation(edge &edgeA, edge &edgeB, int y, Mat &image, Mat &orgi
 
 	GetTrianglePonit(edgeA, edgeB, PQPoints, VertexP, VertexQ);
 
-	for (int i = edgeA.x; i < edgeB.x; i++)
+	start = (int)edgeA.x;
+	end = (int)edgeB.x;
+	if (start != edgeA.x)
+	{
+		start++;
+	}
+
+	for (int i = start; i <= end; i++)
 	{
 		QPoint temppoint, resultpoint;
+		double coordinateX,coordinateY;
+
 		temppoint.rx() = i;
 		temppoint.ry() = y;
 
@@ -258,12 +270,25 @@ int Wrap::BCinterpolation(edge &edgeA, edge &edgeB, int y, Mat &image, Mat &orgi
 
 		GetBarycentricCoordinate(VertexP, temppoint, Para);
 
-		resultpoint = Para[0] * VertexQ[0] + Para[1] * VertexQ[1] + Para[2] * VertexQ[2];
+		coordinateX = Para[0] * VertexQ[0].x() + Para[1] * VertexQ[1].x() + Para[2] * VertexQ[2].x();
+		coordinateY = Para[0] * VertexQ[0].y() + Para[1] * VertexQ[1].y() + Para[2] * VertexQ[2].y();
+
+		resultpoint.rx() = coordinateX + 0.5;
+		resultpoint.ry() = coordinateY + 0.5;
 
 		if((resultpoint.x() >= 0) && (resultpoint.x() < width) && (resultpoint.y() >= 0) && (resultpoint.y() < height))
 		{
-			image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
-			MatrixSet(resultpoint.y(), resultpoint.x()) = 1;
+			
+			if (MatrixSet(resultpoint.y(), resultpoint.x()) != 1)
+			{
+				image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
+				MatrixSet(resultpoint.y(), resultpoint.x()) = 1;
+			}
+			else
+			{
+				overlapcount++;
+			}
+			
 		}
 		else
 		{
@@ -271,6 +296,8 @@ int Wrap::BCinterpolation(edge &edgeA, edge &edgeB, int y, Mat &image, Mat &orgi
 		}
 
 	}
+
+	//printf("overlapcount %d:\n", overlapcount);
 
 
 	return 0;
