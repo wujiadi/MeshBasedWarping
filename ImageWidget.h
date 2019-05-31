@@ -98,6 +98,8 @@ private:
 
 	vector<Line* >   Line_array_;
 	vector<Line* >   Line_mesh_;
+	vector<Line* >   Line_test_;
+
 	vector<KeyPoint> keyPoints;
 	vector<PQPoint>  PQPoints;
 

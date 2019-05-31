@@ -13,7 +13,7 @@ Feature::~Feature()
 //get feature points
 void Feature::fast_feature(Mat const &image, vector<KeyPoint> &keyPoints, vector<Line* > &Line_mesh_, list<edge> * &ET, vector<PQPoint> &PQPoints)
 {
-	FastFeatureDetector fast(30);//30
+	FastFeatureDetector fast(40);//30
 	fast.detect(image,keyPoints);  
 	creat_mesh(image, keyPoints, Line_mesh_, ET, PQPoints);
 }

@@ -237,6 +237,34 @@ int Wrap::DoWrapMesh(Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints, list<
 	return 0;
 }
 
+int Wrap::DoWrapTest(Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints, list<edge>* ET, vector<Line* > &Line_mesh_, vector<Line* > &Line_test_)
+{
+
+	int width = orgimage.cols;
+	int height = orgimage.rows;
+
+	Line_mesh_.clear();
+	Line_test_.clear();
+
+	//for mesh points
+	for (int i = 0; i < height; i++)
+	{
+		//取出ET中当前扫描行的所有边并按x的递增顺序（若x相等则按dx的递增顺序）插入AET
+		for(list<edge>::iterator etit = ET[i].begin(); etit != ET[i].end(); etit++)
+		{
+			Line* current_line_ = NULL;
+			current_line_ = new Line(PQPoints[etit->PonitA].QPoint.x(), PQPoints[etit->PonitA].QPoint.y(), PQPoints[etit->PonitB].QPoint.x(), PQPoints[etit->PonitB].QPoint.y());
+			Line_test_.push_back(current_line_);
+
+			current_line_ = NULL;
+			current_line_ = new Line(PQPoints[etit->PonitA].PPoint.x(), PQPoints[etit->PonitA].PPoint.y(), PQPoints[etit->PonitB].PPoint.x(), PQPoints[etit->PonitB].PPoint.y());
+			Line_mesh_.push_back(current_line_);
+		}
+	}
+
+	return 0;
+}
+
 int Wrap::BCinterpolation(edge &edgeA, edge &edgeB, int y, Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints)
 {
 	int width = orgimage.cols;

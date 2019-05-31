@@ -27,6 +27,7 @@ public:
 	virtual int DoWrapPoints(Mat &image, Mat &tempimage, QPolygon &StartPoints, QPolygon &EndPoints, vector<PQPoint> &PQPoints, list<edge>* ET);
 
 	int DoWrapMesh(Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints, list<edge>* ET);
+	int DoWrapTest(Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints, list<edge>* ET, vector<Line* > &Line_mesh_, vector<Line* > &Line_test_);
 	int FixImage(Mat &image, int searchradius, int searchcount);                                       //Fix the image after wraping
 	double GetDistance(QPoint PointA, QPoint PointB);
 

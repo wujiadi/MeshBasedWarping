@@ -36,6 +36,7 @@ ImageWidget::~ImageWidget(void)
 			Line_array_[i] = NULL;
 		}
 	}
+	Line_array_.clear();
 
 	for (size_t i = 0; i < Line_mesh_.size(); i++)
 	{
@@ -45,6 +46,18 @@ ImageWidget::~ImageWidget(void)
 			Line_mesh_[i] = NULL;
 		}
 	}
+
+	for (size_t i = 0; i < Line_test_.size(); i++)
+	{
+		if (Line_test_[i])
+		{
+			delete Line_test_[i];
+			Line_test_[i] = NULL;
+		}
+	}
+
+	Line_mesh_.clear();
+	Line_test_.clear();
 
 	if (ET)
 	{
@@ -137,6 +150,14 @@ void ImageWidget::paintEvent(QPaintEvent *paintevent)
 		for (size_t i = 0; i < Line_mesh_.size(); i++)
 		{
 			Line_mesh_[i]->Draw(painter);
+		}
+
+		pen.setBrush(Qt::red);
+		painter.setPen(pen);
+
+		for (size_t i = 0; i < Line_test_.size(); i++)
+		{
+			Line_test_[i]->Draw(painter);
 		}
 	}
 	
@@ -272,14 +293,18 @@ void ImageWidget::ImageWarp()
 		func = new RBF;
 		func->Init(Start_Point_,End_Point_);									//get parameter
 		func->DoWrapPoints(image_mat_, image_mat_backup_, Start_Point_, End_Point_, PQPoints, ET);   //do image wrap
-		func->DoWrapMesh(image_mat_, image_mat_backup_, PQPoints, ET);
+		//func->DoWrapMesh(image_mat_, image_mat_backup_, PQPoints, ET);
+		func->DoWrapTest(image_mat_, image_mat_backup_, PQPoints, ET, Line_mesh_, Line_test_);
+		show_mesh_ = true;
 		break;
 
 	case kIDW:
 		func = new IDW;
 		func->Init(Start_Point_,End_Point_);									//get parameter
 		func->DoWrapPoints(image_mat_, image_mat_backup_, Start_Point_, End_Point_, PQPoints, ET);   //do image wrap
-		func->DoWrapMesh(image_mat_, image_mat_backup_, PQPoints, ET);
+		//func->DoWrapMesh(image_mat_, image_mat_backup_, PQPoints, ET);
+		func->DoWrapTest(image_mat_, image_mat_backup_, PQPoints, ET, Line_mesh_, Line_test_);
+		show_mesh_ = true;
 		break;
 
 	case KFix:
@@ -367,6 +392,18 @@ void ImageWidget::SetModeToSetPoint()
 			Line_mesh_[i] = NULL;
 		}
 	}
+
+	for (size_t i = 0; i < Line_test_.size(); i++)
+	{
+		if (Line_test_[i])
+		{
+			delete Line_test_[i];
+			Line_test_[i] = NULL;
+		}
+	}
+
+	Line_mesh_.clear();
+	Line_test_.clear();
 
 	/*
 	Start_Point_ << QPoint(0, 0);

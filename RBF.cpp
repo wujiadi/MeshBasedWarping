@@ -38,7 +38,7 @@ int RBF::DoWrapPoints(Mat &image, Mat &tempimage, QPolygon &StartPoints, QPolygo
 	{
 		for (int j=0; j<height; j++)
 		{
-			image.at<Vec3b>(j, i) = Vec3b(255, 255, 255);
+			//image.at<Vec3b>(j, i) = Vec3b(255, 255, 255);
 		}
 	}
 
@@ -58,7 +58,7 @@ int RBF::DoWrapPoints(Mat &image, Mat &tempimage, QPolygon &StartPoints, QPolygo
 
 		if((resultpoint.x() >= 0) && (resultpoint.x() < width) && (resultpoint.y() >= 0) && (resultpoint.y() < height))
 		{
-			image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
+			//image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
 			MatrixSet(resultpoint.y(), resultpoint.x()) = 1;
 		}
 	}
