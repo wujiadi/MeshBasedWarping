@@ -14,6 +14,7 @@ public:
 	~RBF(void);
 	int Init(QPolygon &StartPoints, QPolygon &EndPoints);
 	int DoWrapPoints(Mat &image, Mat &tempimage, QPolygon &StartPoints, QPolygon &EndPoints, vector<PQPoint> &PQPoints, list<edge>* ET);
+	int DoWrap(Mat &image, QPolygon &StartPoints, QPolygon &EndPoints);
 
 private:
 	void GetCoeR(QPolygon &StartPoints);

@@ -105,8 +105,8 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent *event)
 	current_line_ = new Line(start_point_.rx(), start_point_.ry(), end_point_.rx(), end_point_.ry());
 	Line_array_.push_back(current_line_);
 
-	Start_Point_ << QPoint(start_point_.rx() - (width()-imagewidth)/2, start_point_.ry() - (height()-imageheight)/2);
-	End_Point_ << QPoint(end_point_.rx() - (width()-imagewidth)/2, end_point_.ry() - (height()-imageheight)/2);
+	Start_Point_ << QPoint(start_point_.rx(), start_point_.ry());
+	End_Point_ << QPoint(end_point_.rx(), end_point_.ry());
 
 	draw_status_ = false;
 }
@@ -292,9 +292,10 @@ void ImageWidget::ImageWarp()
 	case kRBF:
 		func = new RBF;
 		func->Init(Start_Point_,End_Point_);									//get parameter
+		//func->DoWrap(image_mat_, Start_Point_, End_Point_);  
 		func->DoWrapPoints(image_mat_, image_mat_backup_, Start_Point_, End_Point_, PQPoints, ET);   //do image wrap
-		//func->DoWrapMesh(image_mat_, image_mat_backup_, PQPoints, ET);
-		func->DoWrapTest(image_mat_, image_mat_backup_, PQPoints, ET, Line_mesh_, Line_test_);
+		func->DoWrapMesh(image_mat_, image_mat_backup_, PQPoints, ET);
+		//func->DoWrapTest(image_mat_, image_mat_backup_, PQPoints, ET, Line_mesh_, Line_test_);
 		show_mesh_ = true;
 		break;
 
@@ -302,8 +303,7 @@ void ImageWidget::ImageWarp()
 		func = new IDW;
 		func->Init(Start_Point_,End_Point_);									//get parameter
 		func->DoWrapPoints(image_mat_, image_mat_backup_, Start_Point_, End_Point_, PQPoints, ET);   //do image wrap
-		//func->DoWrapMesh(image_mat_, image_mat_backup_, PQPoints, ET);
-		func->DoWrapTest(image_mat_, image_mat_backup_, PQPoints, ET, Line_mesh_, Line_test_);
+		func->DoWrapMesh(image_mat_, image_mat_backup_, PQPoints, ET);
 		show_mesh_ = true;
 		break;
 

@@ -30,6 +30,11 @@ int Wrap::DoWrapPoints(Mat &image, Mat &tempimage, QPolygon &StartPoints, QPolyg
 	return 0;
 }
 
+int Wrap::DoWrap(Mat &image, QPolygon &StartPoints, QPolygon &EndPoints)
+{
+	return 0;
+}
+
 //searchradius:R^2
 int Wrap::FixImage(Mat &image, int searchradius, int searchcount)
 {
@@ -307,15 +312,8 @@ int Wrap::BCinterpolation(edge &edgeA, edge &edgeB, int y, Mat &image, Mat &orgi
 		if((resultpoint.x() >= 0) && (resultpoint.x() < width) && (resultpoint.y() >= 0) && (resultpoint.y() < height))
 		{
 			
-			if (MatrixSet(resultpoint.y(), resultpoint.x()) != 1)
-			{
-				image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
-				MatrixSet(resultpoint.y(), resultpoint.x()) = 1;
-			}
-			else
-			{
-				overlapcount++;
-			}
+			image.at<Vec3b>(resultpoint.y(), resultpoint.x()) = bgr;
+			MatrixSet(resultpoint.y(), resultpoint.x()) = 1;
 			
 		}
 		else

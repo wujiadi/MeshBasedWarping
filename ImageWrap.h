@@ -25,6 +25,7 @@ public:
 	virtual ~Wrap(void);
 	virtual int Init(QPolygon &StartPoints, QPolygon &EndPoints);
 	virtual int DoWrapPoints(Mat &image, Mat &tempimage, QPolygon &StartPoints, QPolygon &EndPoints, vector<PQPoint> &PQPoints, list<edge>* ET);
+	virtual int DoWrap(Mat &image, QPolygon &StartPoints, QPolygon &EndPoints);
 
 	int DoWrapMesh(Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints, list<edge>* ET);
 	int DoWrapTest(Mat &image, Mat &orgimage, vector<PQPoint> &PQPoints, list<edge>* ET, vector<Line* > &Line_mesh_, vector<Line* > &Line_test_);
